@@ -84,17 +84,17 @@ Write-Host "Downloading Microsoft prerequisites..." -ForegroundColor Yellow
 $downloads = @(
     @{
         Name = "SQL Server LocalDB 2022"
-        Url = "https://download.microsoft.com/download/7/c/1/7c14e92e-bdcb-4f89-b7cf-93543e7112d1/SqlLocalDB.msi"
+        Url = "https://download.microsoft.com/download/3/8/d/38de7036-2433-4207-8eae-06e247e17b25/SqlLocalDB.msi"
         File = "SqlLocalDB2022.msi"
     },
     @{
         Name = ".NET 7 Desktop Runtime"
-        Url = "https://download.microsoft.com/download/0/5/2/052299f4-6d9e-4c6d-b735-0d1679b33e98/windowsdesktop-runtime-7.0.20-win-x64.exe"
+        Url = "https://download.visualstudio.microsoft.com/download/pr/8bc41df1-cbb3-4abf-a0e1-72e88cbd8b9c/8ffdb74b0c967d24e79a7a89dff6f14b/windowsdesktop-runtime-7.0.20-win-x64.exe"
         File = "windowsdesktop-runtime-7.0.20-win-x64.exe"
     },
     @{
         Name = "ASP.NET Core 7 Runtime"
-        Url = "https://download.microsoft.com/download/3/1/0/31022bb9-3548-4c0c-abd5-9e62b6e7c8e0/aspnetcore-runtime-7.0.20-win-x64.exe"
+        Url = "https://download.visualstudio.microsoft.com/download/pr/4bc79db1-a6ba-4e38-8a08-2e2297b8a6f8/f8ad23db0c34fdea644c3e89b7bb3a90/aspnetcore-runtime-7.0.20-win-x64.exe"
         File = "aspnetcore-runtime-7.0.20-win-x64.exe"
     }
 )
