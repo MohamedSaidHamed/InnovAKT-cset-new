@@ -1,0 +1,204 @@
+name: Build InnovAKT-CSET Installer
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 12.5.0.0)'
+        required: true
+        default: '12.5.0.0'
+
+env:
+  BUILD_VERSION: ${{ github.event.inputs.version || github.ref_name }}
+  DOTNET_VERSION: '7.0'
+  NODE_VERSION: '18'
+
+jobs:
+  build-installer:
+    runs-on: windows-latest
+    
+    steps:
+    # Checkout Code
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    # Setup Build Environment
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: CSETWebNg/package-lock.json
+
+    # Install WiX Toolset
+    - name: Install WiX Toolset
+      run: |
+        dotnet tool install --global wix
+        wix extension add WixToolset.UI.wixext
+        wix extension add WixToolset.Util.wixext
+        wix extension add WixToolset.Bal.wixext
+
+    # Build CSET Application
+    - name: Build CSET Backend (API)
+      run: |
+        cd CSETWebApi/CSETWeb_Api/CSETWeb_ApiCore
+        dotnet publish -c Release -o ../../../dist/api --self-contained false
+      shell: cmd
+
+    - name: Install Angular Dependencies
+      run: |
+        cd CSETWebNg
+        npm ci
+      shell: cmd
+
+    - name: Build CSET Frontend (Angular)
+      run: |
+        cd CSETWebNg
+        npm run build -- --configuration production
+        xcopy /E /I /Y dist ..\dist\web
+      shell: cmd
+
+    # Download Microsoft Prerequisites
+    - name: Download Prerequisites
+      run: |
+        mkdir installer\downloads
+        
+        # SQL Server LocalDB 2022
+        Invoke-WebRequest -Uri "https://download.microsoft.com/download/7/c/1/7c14e92e-bdcb-4f89-b7cf-93543e7112d1/SqlLocalDB.msi" -OutFile "installer\downloads\SqlLocalDB2022.msi"
+        
+        # .NET 7 Desktop Runtime
+        Invoke-WebRequest -Uri "https://download.microsoft.com/download/0/5/2/052299f4-6d9e-4c6d-b735-0d1679b33e98/windowsdesktop-runtime-7.0.20-win-x64.exe" -OutFile "installer\downloads\windowsdesktop-runtime-7.0.20-win-x64.exe"
+        
+        # ASP.NET Core 7 Runtime
+        Invoke-WebRequest -Uri "https://download.microsoft.com/download/3/1/0/31022bb9-3548-4c0c-abd5-9e62b6e7c8e0/aspnetcore-runtime-7.0.20-win-x64.exe" -OutFile "installer\downloads\aspnetcore-runtime-7.0.20-win-x64.exe"
+      shell: powershell
+
+    # Prepare Database Files
+    - name: Prepare Database Files
+      run: |
+        mkdir installer\database
+        # Note: You'll need to include pre-built database files or create them during build
+        echo "Database preparation step - add your database files here"
+      shell: cmd
+
+    # Set Build Variables
+    - name: Set WiX Variables
+      run: |
+        echo "BuildOutput=${{ github.workspace }}\dist" >> $env:GITHUB_ENV
+        echo "DatabasePath=${{ github.workspace }}\installer\database" >> $env:GITHUB_ENV
+      shell: powershell
+
+    # Build Main MSI Package
+    - name: Build Main Application MSI
+      run: |
+        cd installer
+        wix build InnovAKT-CSET.wxs -o InnovAKT-CSET.msi -d BuildOutput="${{ env.BuildOutput }}" -d DatabasePath="${{ env.DatabasePath }}"
+      shell: cmd
+
+    # Build Bundle (Bootstrapper)
+    - name: Build Installer Bundle
+      run: |
+        cd installer
+        wix build Bundle.wxs -o "InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe"
+      shell: cmd
+
+    # Sign the Installer (Optional - requires signing certificate)
+    - name: Sign Installer
+      if: false  # Enable this when you have a code signing certificate
+      run: |
+        # signtool sign /f certificate.pfx /p password /t http://timestamp.sectigo.com installer\InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe
+        echo "Signing step - add your certificate here"
+      shell: cmd
+
+    # Generate SHA256 Hash
+    - name: Generate SHA256 Hash
+      run: |
+        cd installer
+        $hash = Get-FileHash "InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe" -Algorithm SHA256
+        $hash.Hash | Out-File "InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe.sha256"
+        echo "SHA256: $($hash.Hash)"
+      shell: powershell
+
+    # Upload Build Artifacts
+    - name: Upload Installer Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: InnovAKT-CSET-Installer-${{ env.BUILD_VERSION }}
+        path: |
+          installer/InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe
+          installer/InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe.sha256
+        retention-days: 30
+
+    # Create GitHub Release
+    - name: Create Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          installer/InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe
+          installer/InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe.sha256
+        body: |
+          ## InnovAKT-CSET v${{ env.BUILD_VERSION }}
+          
+          ### What's New
+          - Based on CSET cybersecurity evaluation tool
+          - Standalone installation with embedded dependencies
+          - Local SQL Server LocalDB for offline operation
+          - No internet connection required after installation
+          
+          ### Installation
+          1. Download `InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe`
+          2. Run as Administrator
+          3. Follow the installation wizard
+          4. Launch InnovAKT-CSET from Start Menu or Desktop
+          
+          ### System Requirements
+          - Windows 10 or higher (64-bit)
+          - 6 GB free disk space
+          - 4 GB RAM
+          - Administrator privileges for installation
+          
+          ### SHA256 Checksum
+          See the `.sha256` file for verification.
+          
+          ---
+          🤖 Built with GitHub Actions
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Optional: Test the installer
+  test-installer:
+    needs: build-installer
+    runs-on: windows-latest
+    if: false  # Enable when you want to test installations
+    
+    steps:
+    - name: Download Installer
+      uses: actions/download-artifact@v3
+      with:
+        name: InnovAKT-CSET-Installer-${{ env.BUILD_VERSION }}
+        
+    - name: Test Installation
+      run: |
+        # Run installer in silent mode for testing
+        Start-Process "InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe" -ArgumentList "/quiet" -Wait
+        
+        # Check if application was installed
+        $installed = Test-Path "C:\Program Files\InnovAKT-CSET\CSETWebCore.Api.exe"
+        if (-not $installed) {
+          throw "Installation failed - application not found"
+        }
+        
+        echo "Installation test passed!"
+      shell: powershell

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+
+  <!-- Bundle Definition - Creates the bootstrapper executable -->
+  <Bundle Name="InnovAKT-CSET Standalone Installer" 
+          Version="12.5.0.0" 
+          Manufacturer="InnovAKT"
+          IconSourceFile="cset-icon.ico"
+          UpgradeCode="B2C3D4E5-F6A7-5678-9012-ABCDEF123456">
+
+    <!-- Bundle Variables -->
+    <Variable Name="InstallFolder" Type="string" Value="[ProgramFiles64Folder]InnovAKT-CSET\" />
+    <Variable Name="LaunchTarget" Type="string" Value="[InstallFolder]CSETWebCore.Api.exe" />
+
+    <!-- Bootstrap Application (UI) -->
+    <BootstrapperApplication>
+      <bal:WixStandardBootstrapperApplication 
+        LicenseFile="License.rtf"
+        LogoFile="cset-logo.png"
+        ThemeFile="HyperlinkTheme.xml"
+        LocalizationFile="HyperlinkTheme.wxl" />
+    </BootstrapperApplication>
+
+    <!-- Chain of Packages to Install -->
+    <Chain>
+      
+      <!-- 1. SQL Server LocalDB 2022 -->
+      <PackageGroupRef Id="SqlLocalDB2022" />
+      
+      <!-- 2. .NET 7 Runtime -->
+      <PackageGroupRef Id="NetFramework70" />
+      
+      <!-- 3. ASP.NET Core 7 Runtime -->
+      <PackageGroupRef Id="AspNetCore70" />
+      
+      <!-- 4. Main Application -->
+      <MsiPackage Id="InnovAKTCSETMsi" 
+                  SourceFile="InnovAKT-CSET.msi" 
+                  DisplayName="InnovAKT-CSET Application"
+                  Vital="yes"
+                  InstallCondition="1">
+        <MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]" />
+      </MsiPackage>
+
+    </Chain>
+
+  </Bundle>
+
+  <!-- SQL Server LocalDB 2022 Package Group -->
+  <Fragment>
+    <PackageGroup Id="SqlLocalDB2022">
+      <ExePackage Id="SqlLocalDB2022Exe"
+                  SourceFile="downloads\SqlLocalDB2022.msi"
+                  DisplayName="Microsoft SQL Server 2022 LocalDB"
+                  InstallCommand="/quiet /norestart IACCEPTSQLSERVERLICENSETERMS=YES"
+                  RepairCommand="/quiet /norestart IACCEPTSQLSERVERLICENSETERMS=YES"
+                  UninstallCommand="/quiet /norestart"
+                  PerMachine="yes"
+                  Permanent="yes"
+                  Vital="yes">
+        
+        <!-- Detection Logic -->
+        <util:RegistrySearch Id="SqlLocalDB2022Search"
+                            Root="HKLM"
+                            Key="SOFTWARE\Microsoft\Microsoft SQL Server Local DB\Installed Versions\15.0"
+                            Value="Version"
+                            Variable="SqlLocalDB2022Version" />
+        
+        <InstallCondition>NOT SqlLocalDB2022Version</InstallCondition>
+        
+      </ExePackage>
+    </PackageGroup>
+  </Fragment>
+
+  <!-- .NET 7 Runtime Package Group -->
+  <Fragment>
+    <PackageGroup Id="NetFramework70">
+      <ExePackage Id="NetFramework70Exe"
+                  SourceFile="downloads\windowsdesktop-runtime-7.0.20-win-x64.exe"
+                  DisplayName="Microsoft .NET 7.0 Runtime"
+                  InstallCommand="/quiet /norestart"
+                  RepairCommand="/quiet /norestart"
+                  UninstallCommand="/quiet /norestart"
+                  PerMachine="yes"
+                  Permanent="yes"
+                  Vital="yes">
+
+        <!-- Detection Logic -->
+        <util:RegistrySearch Id="NetFramework70Search"
+                            Root="HKLM"
+                            Key="SOFTWARE\WOW6432Node\dotnet\Setup\InstalledVersions\x64\sharedfx\Microsoft.NETCore.App"
+                            Value="7.0.20"
+                            Variable="NetFramework70Version" />
+
+        <InstallCondition>NOT NetFramework70Version</InstallCondition>
+
+      </ExePackage>
+    </PackageGroup>
+  </Fragment>
+
+  <!-- ASP.NET Core 7 Runtime Package Group -->
+  <Fragment>
+    <PackageGroup Id="AspNetCore70">
+      <ExePackage Id="AspNetCore70Exe"
+                  SourceFile="downloads\aspnetcore-runtime-7.0.20-win-x64.exe"
+                  DisplayName="Microsoft ASP.NET Core 7.0 Runtime"
+                  InstallCommand="/quiet /norestart"
+                  RepairCommand="/quiet /norestart"
+                  UninstallCommand="/quiet /norestart"
+                  PerMachine="yes"
+                  Permanent="yes"
+                  Vital="yes">
+
+        <!-- Detection Logic -->
+        <util:RegistrySearch Id="AspNetCore70Search"
+                            Root="HKLM"
+                            Key="SOFTWARE\WOW6432Node\dotnet\Setup\InstalledVersions\x64\sharedfx\Microsoft.AspNetCore.App"
+                            Value="7.0.20"
+                            Variable="AspNetCore70Version" />
+
+        <InstallCondition>NOT AspNetCore70Version</InstallCondition>
+
+      </ExePackage>
+    </PackageGroup>
+  </Fragment>
+
+</Wix>
