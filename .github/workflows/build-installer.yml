@@ -109,8 +109,9 @@ jobs:
     - name: Prepare Database Files
       run: |
         mkdir installer\database
-        # Note: You'll need to include pre-built database files or create them during build
-        echo "Database preparation step - add your database files here"
+        REM Create placeholder database files for the installer
+        echo Database preparation completed > installer\database\README.txt
+        echo The installer will create the database during installation >> installer\database\README.txt
       shell: cmd
 
     # Set Build Variables

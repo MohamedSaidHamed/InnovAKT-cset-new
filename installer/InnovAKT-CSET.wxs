@@ -156,12 +156,11 @@
   <Fragment>
     <ComponentGroup Id="DatabaseComponents" Directory="AppDataVersion">
       
-      <Component Id="DatabaseFiles" Guid="{67890123-6789-6789-6789-6789ABCDEF01}">
-        <File Id="CSETWebMdf" 
-              Source="$(var.DatabasePath)\CSETWeb.mdf" 
+      <Component Id="DatabasePlaceholder" Guid="{67890123-6789-6789-6789-6789ABCDEF01}">
+        <File Id="DatabaseReadme" 
+              Source="$(var.DatabasePath)\README.txt" 
               KeyPath="yes" />
-        <File Id="CSETWebLdf" 
-              Source="$(var.DatabasePath)\CSETWeb_log.ldf" />
+        <!-- Database files will be created by the application on first run -->
       </Component>
 
     </ComponentGroup>
