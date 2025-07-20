@@ -79,7 +79,7 @@
       </Component>
 
       <!-- Web UI Components - Placeholder for now -->
-      <Component Id="CSETWebUI">
+      <Component Id="CSETWebUI" Guid="{23456789-2345-2345-2345-23456789ABCD}">
         <CreateFolder />
         <!-- Web files will be added once we know the correct structure -->
       </Component>
@@ -138,7 +138,7 @@
     <ComponentGroup Id="ConfigComponents" Directory="INSTALLFOLDER">
       
       <!-- Placeholder for config files - will add once we know structure -->
-      <Component Id="ConfigPlaceholder">
+      <Component Id="ConfigPlaceholder" Guid="{78901234-7890-7890-7890-789ABCDEF012}">
         <CreateFolder />
       </Component>
 
