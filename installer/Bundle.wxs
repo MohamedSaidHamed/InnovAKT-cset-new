@@ -3,11 +3,10 @@
      xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal"
      xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
 
-  <!-- Bundle Definition - Creates the bootstrapper executable -->
+  <!-- Bundle Definition - Creates the bootstrapper executable (WiX v4 syntax) -->
   <Bundle Name="InnovAKT-CSET Standalone Installer" 
           Version="12.5.0.0" 
           Manufacturer="InnovAKT"
-          IconSourceFile="cset-icon.ico"
           UpgradeCode="B2C3D4E5-F6A7-5678-9012-ABCDEF123456">
 
     <!-- Bundle Variables -->
@@ -17,10 +16,7 @@
     <!-- Bootstrap Application (UI) -->
     <BootstrapperApplication>
       <bal:WixStandardBootstrapperApplication 
-        LicenseFile="License.rtf"
-        LogoFile="cset-logo.png"
-        ThemeFile="HyperlinkTheme.xml"
-        LocalizationFile="HyperlinkTheme.wxl" />
+        LicenseFile="License.rtf" />
     </BootstrapperApplication>
 
     <!-- Chain of Packages to Install -->
@@ -55,8 +51,6 @@
                   SourceFile="downloads\SqlLocalDB2022.msi"
                   DisplayName="Microsoft SQL Server 2022 LocalDB"
                   InstallCondition="NOT SqlLocalDB2022Version"
-                  PerMachine="yes"
-                  Permanent="yes"
                   Vital="no">
         
         <!-- Detection Logic -->
@@ -78,8 +72,6 @@
                   DisplayName="Microsoft .NET 7.0 Runtime"
                   InstallCommand="/quiet /norestart"
                   InstallCondition="NOT NetFramework70Version"
-                  PerMachine="yes"
-                  Permanent="yes"
                   Vital="no">
 
         <!-- Detection Logic -->
@@ -101,8 +93,6 @@
                   DisplayName="Microsoft ASP.NET Core 7.0 Runtime"
                   InstallCommand="/quiet /norestart"
                   InstallCondition="NOT AspNetCore70Version"
-                  PerMachine="yes"
-                  Permanent="yes"
                   Vital="no">
 
         <!-- Detection Logic -->

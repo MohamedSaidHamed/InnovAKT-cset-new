@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   
-  <!-- Main Product Definition -->
-  <Product Id="*" 
-           Name="InnovAKT-CSET" 
+  <!-- Main Package Definition (WiX v4 syntax) -->
+  <Package Name="InnovAKT-CSET" 
            Language="1033" 
            Version="12.5.0.0" 
            Manufacturer="InnovAKT" 
-           UpgradeCode="A1B2C3D4-E5F6-1234-5678-9ABCDEF01234">
+           UpgradeCode="A1B2C3D4-E5F6-1234-5678-9ABCDEF01234"
+           InstallerVersion="500"
+           Scope="perMachine">
            
-    <Package InstallerVersion="200" 
-             Compressed="yes" 
-             InstallScope="perMachine" 
-             Description="InnovAKT Cybersecurity Evaluation Tool - Standalone Installation" />
+    <SummaryInformation Description="InnovAKT Cybersecurity Evaluation Tool - Standalone Installation" />
 
     <!-- Media and Cabinet -->
     <MediaTemplate EmbedCab="yes" />
@@ -58,34 +56,33 @@
     </Property>
 
     <!-- Launch Conditions -->
-    <Condition Message="This application requires .NET 7.0 or higher.">
-      <![CDATA[Installed OR NETFRAMEWORK70]]>
-    </Condition>
+    <Launch Condition="Installed OR NETFRAMEWORK70" 
+            Message="This application requires .NET 7.0 or higher." />
 
-    <Condition Message="This application requires Windows 10 or higher.">
-      <![CDATA[Installed OR (VersionNT >= 603)]]>
-    </Condition>
+    <Launch Condition="Installed OR (VersionNT >= 603)" 
+            Message="This application requires Windows 10 or higher." />
 
-  </Product>
+  </Package>
 
-  <!-- Folder Structure -->
+  <!-- Folder Structure using StandardDirectory -->
   <Fragment>
-    <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="ProgramFiles64Folder">
-        <Directory Id="INSTALLFOLDER" Name="InnovAKT-CSET" />
-      </Directory>
-      <Directory Id="ProgramMenuFolder">
-        <Directory Id="ApplicationProgramsFolder" Name="InnovAKT-CSET" />
-      </Directory>
-      <Directory Id="DesktopFolder" Name="Desktop" />
-      <Directory Id="LocalAppDataFolder">
-        <Directory Id="AppDataDHS" Name="DHS">
-          <Directory Id="AppDataCSET" Name="CSET">
-            <Directory Id="AppDataVersion" Name="12.5.0.0" />
-          </Directory>
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="InnovAKT-CSET" />
+    </StandardDirectory>
+    
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ApplicationProgramsFolder" Name="InnovAKT-CSET" />
+    </StandardDirectory>
+    
+    <StandardDirectory Id="DesktopFolder" />
+    
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Id="AppDataDHS" Name="DHS">
+        <Directory Id="AppDataCSET" Name="CSET">
+          <Directory Id="AppDataVersion" Name="12.5.0.0" />
         </Directory>
       </Directory>
-    </Directory>
+    </StandardDirectory>
   </Fragment>
 
   <!-- Main Application Components -->
@@ -95,8 +92,7 @@
       <!-- API Components -->
       <Component Id="CSETWebApiCore" Guid="{12345678-1234-1234-1234-123456789ABC}">
         <File Id="CSETWebApiCoreExe" 
-              Source="$(var.BuildOutput)\CSETWebApi\CSETWeb_Api\CSETWeb_ApiCore\publish\CSETWebCore.Api.exe" 
-              KeyPath="yes" />
+              Source="$(var.BuildOutput)\CSETWebApi\CSETWeb_Api\CSETWeb_ApiCore\publish\CSETWebCore.Api.exe" />
         <File Id="CSETWebApiCoreDll" 
               Source="$(var.BuildOutput)\CSETWebApi\CSETWeb_Api\CSETWeb_ApiCore\publish\CSETWebCore.Api.dll" />
         <File Id="AppSettingsJson" 
@@ -106,23 +102,20 @@
       <!-- Web UI Components -->
       <Component Id="CSETWebUI" Guid="{23456789-2345-2345-2345-23456789ABCD}">
         <File Id="IndexHtml" 
-              Source="$(var.BuildOutput)\CSETWebNg\dist\index.html" 
-              KeyPath="yes" />
+              Source="$(var.BuildOutput)\CSETWebNg\dist\index.html" />
         <!-- Add more UI files as needed -->
       </Component>
 
       <!-- Configuration Files -->
       <Component Id="LocalInstallationMarker" Guid="{34567890-3456-3456-3456-3456789ABCDE}">
         <File Id="LocalInstallFile" 
-              Source="LOCAL-INSTALLATION" 
-              KeyPath="yes" />
+              Source="LOCAL-INSTALLATION" />
       </Component>
 
       <!-- Start Menu Shortcut -->
       <Component Id="ApplicationShortcut" Guid="{45678901-4567-4567-4567-456789ABCDEF}" Directory="ApplicationProgramsFolder">
         <Shortcut Id="ApplicationStartMenuShortcut"
                   Name="InnovAKT-CSET"
-                  Description="InnovAKT Cybersecurity Evaluation Tool"
                   Target="[INSTALLFOLDER]CSETWebCore.Api.exe"
                   WorkingDirectory="INSTALLFOLDER" />
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
@@ -130,23 +123,20 @@
                        Key="Software\InnovAKT\CSET" 
                        Name="installed" 
                        Type="integer" 
-                       Value="1" 
-                       KeyPath="yes" />
+                       Value="1" />
       </Component>
 
       <!-- Desktop Shortcut -->
       <Component Id="DesktopShortcut" Guid="{56789012-5678-5678-5678-56789ABCDEF0}" Directory="DesktopFolder">
         <Shortcut Id="ApplicationDesktopShortcut"
                   Name="InnovAKT-CSET"
-                  Description="InnovAKT Cybersecurity Evaluation Tool"
                   Target="[INSTALLFOLDER]CSETWebCore.Api.exe"
                   WorkingDirectory="INSTALLFOLDER" />
         <RegistryValue Root="HKCU" 
                        Key="Software\InnovAKT\CSET" 
                        Name="desktop" 
                        Type="integer" 
-                       Value="1" 
-                       KeyPath="yes" />
+                       Value="1" />
       </Component>
 
     </ComponentGroup>
@@ -158,8 +148,7 @@
       
       <Component Id="DatabasePlaceholder" Guid="{67890123-6789-6789-6789-6789ABCDEF01}">
         <File Id="DatabaseReadme" 
-              Source="$(var.DatabasePath)\README.txt" 
-              KeyPath="yes" />
+              Source="$(var.DatabasePath)\README.txt" />
         <!-- Database files will be created by the application on first run -->
       </Component>
 
@@ -172,14 +161,12 @@
       
       <Component Id="WebConfig" Guid="{78901234-7890-7890-7890-789ABCDEF012}">
         <File Id="WebConfigFile" 
-              Source="$(var.BuildOutput)\CSETWebNg\dist\web.config" 
-              KeyPath="yes" />
+              Source="$(var.BuildOutput)\CSETWebNg\dist\web.config" />
       </Component>
 
       <Component Id="NlogConfig" Guid="{89012345-8901-8901-8901-89ABCDEF0123}">
         <File Id="NlogConfigFile" 
-              Source="$(var.BuildOutput)\CSETWebApi\CSETWeb_Api\CSETWeb_ApiCore\publish\nlog.config" 
-              KeyPath="yes" />
+              Source="$(var.BuildOutput)\CSETWebApi\CSETWeb_Api\CSETWeb_ApiCore\publish\nlog.config" />
       </Component>
 
     </ComponentGroup>
