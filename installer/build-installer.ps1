@@ -141,7 +141,7 @@ Write-Host "Building installer bundle..." -ForegroundColor Yellow
 Push-Location $installerPath
 try {
     $bundleName = "InnovAKT-CSET-v$Version.exe"
-    wix build Bundle.wxs -o $bundleName -ext WixToolset.Bal.wixext -ext WixToolset.Util.wixext
+    wix build Bundle.wxs -o $bundleName
     if ($LASTEXITCODE -ne 0) { throw "Bundle build failed" }
     Write-Host "Installer bundle created: $bundleName" -ForegroundColor Green
 } finally {
