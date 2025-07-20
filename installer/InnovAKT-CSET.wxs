@@ -69,7 +69,7 @@
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
       
       <!-- API Components -->
-      <Component Id="CSETWebApiCore">
+      <Component Id="CSETWebApiCore" Guid="{12345678-1234-1234-1234-123456789ABC}">
         <File Id="CSETWebApiCoreExe" 
               Source="$(var.BuildOutput)\api\CSETWebCore.Api.exe" />
         <File Id="CSETWebApiCoreDll" 
@@ -85,13 +85,13 @@
       </Component>
 
       <!-- Configuration Files -->
-      <Component Id="LocalInstallationMarker">
+      <Component Id="LocalInstallationMarker" Guid="{34567890-3456-3456-3456-3456789ABCDE}">
         <File Id="LocalInstallFile" 
               Source="LOCAL-INSTALLATION" />
       </Component>
 
       <!-- Start Menu Shortcut -->
-      <Component Id="ApplicationShortcut" Directory="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Directory="ApplicationProgramsFolder" Guid="{45678901-4567-4567-4567-456789ABCDEF}">
         <Shortcut Id="ApplicationStartMenuShortcut"
                   Name="InnovAKT-CSET"
                   Target="[INSTALLFOLDER]CSETWebCore.Api.exe"
@@ -105,7 +105,7 @@
       </Component>
 
       <!-- Desktop Shortcut -->
-      <Component Id="DesktopShortcut" Directory="DesktopFolder">
+      <Component Id="DesktopShortcut" Directory="DesktopFolder" Guid="{56789012-5678-5678-5678-56789ABCDEF0}">
         <Shortcut Id="ApplicationDesktopShortcut"
                   Name="InnovAKT-CSET"
                   Target="[INSTALLFOLDER]CSETWebCore.Api.exe"
@@ -124,7 +124,7 @@
   <Fragment>
     <ComponentGroup Id="DatabaseComponents" Directory="AppDataVersion">
       
-      <Component Id="DatabasePlaceholder">
+      <Component Id="DatabasePlaceholder" Guid="{67890123-6789-6789-6789-6789ABCDEF01}">
         <File Id="DatabaseReadme" 
               Source="$(var.DatabasePath)\README.txt" />
         <!-- Database files will be created by the application on first run -->
