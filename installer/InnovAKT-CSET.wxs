@@ -78,17 +78,16 @@
               Source="$(var.BuildOutput)\api\appsettings.json" />
       </Component>
 
-      <!-- Web UI Components -->
+      <!-- Web UI Components - Placeholder for now -->
       <Component Id="CSETWebUI">
-        <File Id="IndexHtml" 
-              Source="$(var.BuildOutput)\web\index.html" />
-        <!-- Add more UI files as needed -->
+        <CreateFolder />
+        <!-- Web files will be added once we know the correct structure -->
       </Component>
 
       <!-- Configuration Files -->
       <Component Id="LocalInstallationMarker">
         <File Id="LocalInstallFile" 
-              Source="installer\LOCAL-INSTALLATION" />
+              Source="LOCAL-INSTALLATION" />
       </Component>
 
       <!-- Start Menu Shortcut -->
@@ -138,14 +137,9 @@
   <Fragment>
     <ComponentGroup Id="ConfigComponents" Directory="INSTALLFOLDER">
       
-      <Component Id="WebConfig">
-        <File Id="WebConfigFile" 
-              Source="$(var.BuildOutput)\web\web.config" />
-      </Component>
-
-      <Component Id="NlogConfig">
-        <File Id="NlogConfigFile" 
-              Source="$(var.BuildOutput)\api\nlog.config" />
+      <!-- Placeholder for config files - will add once we know structure -->
+      <Component Id="ConfigPlaceholder">
+        <CreateFolder />
       </Component>
 
     </ComponentGroup>
