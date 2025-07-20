@@ -44,7 +44,6 @@ jobs:
     - name: Install WiX Toolset
       run: |
         dotnet tool install --global wix
-        wix extension add WixToolset.UI.wixext --global
         wix extension add WixToolset.Util.wixext --global
         wix extension add WixToolset.Bal.wixext --global
 
@@ -125,7 +124,7 @@ jobs:
     - name: Build Main Application MSI
       run: |
         cd installer
-        wix build InnovAKT-CSET.wxs -o InnovAKT-CSET.msi -d BuildOutput="${{ env.BuildOutput }}" -d DatabasePath="${{ env.DatabasePath }}" -ext WixToolset.UI.wixext
+        wix build InnovAKT-CSET.wxs -o InnovAKT-CSET.msi -d BuildOutput="${{ env.BuildOutput }}" -d DatabasePath="${{ env.DatabasePath }}"
       shell: cmd
 
     # Build Bundle (Bootstrapper)

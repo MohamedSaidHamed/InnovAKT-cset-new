@@ -25,13 +25,13 @@
     <!-- Upgrade Logic -->
     <MajorUpgrade DowngradeErrorMessage="A newer version of InnovAKT-CSET is already installed." />
 
-    <!-- UI Configuration -->
+    <!-- UI Configuration - Simple Silent Install -->
     <UI>
-      <UIRef Id="WixUI_Minimal" />
+      <!-- Progress dialog for installation -->
+      <ProgressText Action="InstallFiles">Installing InnovAKT-CSET files...</ProgressText>
+      <ProgressText Action="CreateShortcuts">Creating shortcuts...</ProgressText>
+      <ProgressText Action="WriteRegistryValues">Writing registry values...</ProgressText>
     </UI>
-
-    <!-- License -->
-    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
     
     <!-- Prerequisites Check -->
     <Property Id="NETFRAMEWORK70">

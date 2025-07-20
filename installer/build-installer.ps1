@@ -122,7 +122,6 @@ Write-Host "Database preparation completed (placeholder)" -ForegroundColor Green
 
 # Install WiX extensions
 Write-Host "Installing WiX extensions..." -ForegroundColor Yellow
-wix extension add WixToolset.UI.wixext --global | Out-Null
 wix extension add WixToolset.Util.wixext --global | Out-Null
 wix extension add WixToolset.Bal.wixext --global | Out-Null
 
@@ -130,7 +129,7 @@ wix extension add WixToolset.Bal.wixext --global | Out-Null
 Write-Host "Building main application MSI..." -ForegroundColor Yellow
 Push-Location $installerPath
 try {
-    wix build InnovAKT-CSET.wxs -o InnovAKT-CSET.msi -d "BuildOutput=$distPath" -d "DatabasePath=$databasePath" -ext WixToolset.UI.wixext
+    wix build InnovAKT-CSET.wxs -o InnovAKT-CSET.msi -d "BuildOutput=$distPath" -d "DatabasePath=$databasePath"
     if ($LASTEXITCODE -ne 0) { throw "MSI build failed" }
     Write-Host "MSI package created successfully" -ForegroundColor Green
 } finally {
