@@ -1,0 +1,7 @@
+This file indicates that this is a local standalone installation of InnovAKT-CSET.
+
+Installation Type: Standalone
+Database: SQL Server LocalDB
+Internet Required: No
+
+This marker file is used by the application to detect that it should operate in standalone mode with local database connectivity.
