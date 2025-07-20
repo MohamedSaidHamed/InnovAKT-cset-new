@@ -125,14 +125,14 @@ jobs:
     - name: Build Main Application MSI
       run: |
         cd installer
-        wix build InnovAKT-CSET.wxs -o InnovAKT-CSET.msi -d BuildOutput="${{ env.BuildOutput }}" -d DatabasePath="${{ env.DatabasePath }}"
+        wix build InnovAKT-CSET.wxs -o InnovAKT-CSET.msi -d BuildOutput="${{ env.BuildOutput }}" -d DatabasePath="${{ env.DatabasePath }}" -ext WixToolset.UI.wixext
       shell: cmd
 
     # Build Bundle (Bootstrapper)
     - name: Build Installer Bundle
       run: |
         cd installer
-        wix build Bundle.wxs -o "InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe"
+        wix build Bundle.wxs -o "InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe" -ext WixToolset.Bal.wixext -ext WixToolset.Util.wixext
       shell: cmd
 
     # Sign the Installer (Optional - requires signing certificate)

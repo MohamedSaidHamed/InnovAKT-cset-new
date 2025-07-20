@@ -130,7 +130,7 @@ wix extension add WixToolset.Bal.wixext --global | Out-Null
 Write-Host "Building main application MSI..." -ForegroundColor Yellow
 Push-Location $installerPath
 try {
-    wix build InnovAKT-CSET.wxs -o InnovAKT-CSET.msi -d "BuildOutput=$distPath" -d "DatabasePath=$databasePath"
+    wix build InnovAKT-CSET.wxs -o InnovAKT-CSET.msi -d "BuildOutput=$distPath" -d "DatabasePath=$databasePath" -ext WixToolset.UI.wixext
     if ($LASTEXITCODE -ne 0) { throw "MSI build failed" }
     Write-Host "MSI package created successfully" -ForegroundColor Green
 } finally {
@@ -142,7 +142,7 @@ Write-Host "Building installer bundle..." -ForegroundColor Yellow
 Push-Location $installerPath
 try {
     $bundleName = "InnovAKT-CSET-v$Version.exe"
-    wix build Bundle.wxs -o $bundleName
+    wix build Bundle.wxs -o $bundleName -ext WixToolset.Bal.wixext -ext WixToolset.Util.wixext
     if ($LASTEXITCODE -ne 0) { throw "Bundle build failed" }
     Write-Host "Installer bundle created: $bundleName" -ForegroundColor Green
 } finally {
