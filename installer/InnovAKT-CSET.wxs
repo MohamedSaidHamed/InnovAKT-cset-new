@@ -24,14 +24,6 @@
 
     <!-- Upgrade Logic -->
     <MajorUpgrade DowngradeErrorMessage="A newer version of InnovAKT-CSET is already installed." />
-
-    <!-- UI Configuration - Simple Silent Install -->
-    <UI>
-      <!-- Progress dialog for installation -->
-      <ProgressText Action="InstallFiles">Installing InnovAKT-CSET files...</ProgressText>
-      <ProgressText Action="CreateShortcuts">Creating shortcuts...</ProgressText>
-      <ProgressText Action="WriteRegistryValues">Writing registry values...</ProgressText>
-    </UI>
     
     <!-- Prerequisites Check -->
     <Property Id="NETFRAMEWORK70">
