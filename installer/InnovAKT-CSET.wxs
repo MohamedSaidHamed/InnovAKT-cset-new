@@ -27,14 +27,11 @@
 
     <!-- UI Configuration -->
     <UI>
-      <UIRef Id="WixUI_InstallDir" />
+      <UIRef Id="WixUI_Minimal" />
     </UI>
 
     <!-- License -->
     <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
-
-    <!-- Installation Directory -->
-    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
     
     <!-- Prerequisites Check -->
     <Property Id="NETFRAMEWORK70">
