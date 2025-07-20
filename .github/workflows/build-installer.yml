@@ -113,6 +113,17 @@ jobs:
         echo The installer will create the database during installation >> installer\database\README.txt
       shell: cmd
 
+    # Debug Build Output Structure
+    - name: Debug Build Output
+      run: |
+        echo "=== Build Output Structure ==="
+        Get-ChildItem -Recurse dist | Select-Object FullName
+        echo "=== API Output ==="
+        if (Test-Path "dist\api") { Get-ChildItem dist\api }
+        echo "=== Web Output ==="
+        if (Test-Path "dist\web") { Get-ChildItem dist\web }
+      shell: powershell
+
     # Set Build Variables
     - name: Set WiX Variables
       run: |

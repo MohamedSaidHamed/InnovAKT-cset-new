@@ -71,24 +71,24 @@
       <!-- API Components -->
       <Component Id="CSETWebApiCore">
         <File Id="CSETWebApiCoreExe" 
-              Source="$(var.BuildOutput)\CSETWebApi\CSETWeb_Api\CSETWeb_ApiCore\publish\CSETWebCore.Api.exe" />
+              Source="$(var.BuildOutput)\api\CSETWebCore.Api.exe" />
         <File Id="CSETWebApiCoreDll" 
-              Source="$(var.BuildOutput)\CSETWebApi\CSETWeb_Api\CSETWeb_ApiCore\publish\CSETWebCore.Api.dll" />
+              Source="$(var.BuildOutput)\api\CSETWebCore.Api.dll" />
         <File Id="AppSettingsJson" 
-              Source="$(var.BuildOutput)\CSETWebApi\CSETWeb_Api\CSETWeb_ApiCore\publish\appsettings.json" />
+              Source="$(var.BuildOutput)\api\appsettings.json" />
       </Component>
 
       <!-- Web UI Components -->
       <Component Id="CSETWebUI">
         <File Id="IndexHtml" 
-              Source="$(var.BuildOutput)\CSETWebNg\dist\index.html" />
+              Source="$(var.BuildOutput)\web\index.html" />
         <!-- Add more UI files as needed -->
       </Component>
 
       <!-- Configuration Files -->
       <Component Id="LocalInstallationMarker">
         <File Id="LocalInstallFile" 
-              Source="LOCAL-INSTALLATION" />
+              Source="installer\LOCAL-INSTALLATION" />
       </Component>
 
       <!-- Start Menu Shortcut -->
@@ -140,12 +140,12 @@
       
       <Component Id="WebConfig">
         <File Id="WebConfigFile" 
-              Source="$(var.BuildOutput)\CSETWebNg\dist\web.config" />
+              Source="$(var.BuildOutput)\web\web.config" />
       </Component>
 
       <Component Id="NlogConfig">
         <File Id="NlogConfigFile" 
-              Source="$(var.BuildOutput)\CSETWebApi\CSETWeb_Api\CSETWeb_ApiCore\publish\nlog.config" />
+              Source="$(var.BuildOutput)\api\nlog.config" />
       </Component>
 
     </ComponentGroup>
