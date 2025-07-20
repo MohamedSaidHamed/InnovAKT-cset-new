@@ -77,7 +77,7 @@
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
       
       <!-- API Components -->
-      <Component Id="CSETWebApiCore" Guid="{12345678-1234-1234-1234-123456789ABC}">
+      <Component Id="CSETWebApiCore">
         <File Id="CSETWebApiCoreExe" 
               Source="$(var.BuildOutput)\CSETWebApi\CSETWeb_Api\CSETWeb_ApiCore\publish\CSETWebCore.Api.exe" />
         <File Id="CSETWebApiCoreDll" 
@@ -87,20 +87,20 @@
       </Component>
 
       <!-- Web UI Components -->
-      <Component Id="CSETWebUI" Guid="{23456789-2345-2345-2345-23456789ABCD}">
+      <Component Id="CSETWebUI">
         <File Id="IndexHtml" 
               Source="$(var.BuildOutput)\CSETWebNg\dist\index.html" />
         <!-- Add more UI files as needed -->
       </Component>
 
       <!-- Configuration Files -->
-      <Component Id="LocalInstallationMarker" Guid="{34567890-3456-3456-3456-3456789ABCDE}">
+      <Component Id="LocalInstallationMarker">
         <File Id="LocalInstallFile" 
               Source="LOCAL-INSTALLATION" />
       </Component>
 
       <!-- Start Menu Shortcut -->
-      <Component Id="ApplicationShortcut" Guid="{45678901-4567-4567-4567-456789ABCDEF}" Directory="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Directory="ApplicationProgramsFolder">
         <Shortcut Id="ApplicationStartMenuShortcut"
                   Name="InnovAKT-CSET"
                   Target="[INSTALLFOLDER]CSETWebCore.Api.exe"
@@ -114,7 +114,7 @@
       </Component>
 
       <!-- Desktop Shortcut -->
-      <Component Id="DesktopShortcut" Guid="{56789012-5678-5678-5678-56789ABCDEF0}" Directory="DesktopFolder">
+      <Component Id="DesktopShortcut" Directory="DesktopFolder">
         <Shortcut Id="ApplicationDesktopShortcut"
                   Name="InnovAKT-CSET"
                   Target="[INSTALLFOLDER]CSETWebCore.Api.exe"
@@ -133,7 +133,7 @@
   <Fragment>
     <ComponentGroup Id="DatabaseComponents" Directory="AppDataVersion">
       
-      <Component Id="DatabasePlaceholder" Guid="{67890123-6789-6789-6789-6789ABCDEF01}">
+      <Component Id="DatabasePlaceholder">
         <File Id="DatabaseReadme" 
               Source="$(var.DatabasePath)\README.txt" />
         <!-- Database files will be created by the application on first run -->
@@ -146,12 +146,12 @@
   <Fragment>
     <ComponentGroup Id="ConfigComponents" Directory="INSTALLFOLDER">
       
-      <Component Id="WebConfig" Guid="{78901234-7890-7890-7890-789ABCDEF012}">
+      <Component Id="WebConfig">
         <File Id="WebConfigFile" 
               Source="$(var.BuildOutput)\CSETWebNg\dist\web.config" />
       </Component>
 
-      <Component Id="NlogConfig" Guid="{89012345-8901-8901-8901-89ABCDEF0123}">
+      <Component Id="NlogConfig">
         <File Id="NlogConfigFile" 
               Source="$(var.BuildOutput)\CSETWebApi\CSETWeb_Api\CSETWeb_ApiCore\publish\nlog.config" />
       </Component>
