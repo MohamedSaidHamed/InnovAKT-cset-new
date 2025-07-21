@@ -138,14 +138,38 @@ jobs:
         wix build InnovAKT-CSET.wxs -o InnovAKT-CSET.msi -d BuildOutput="${{ env.BuildOutput }}" -d DatabasePath="${{ env.DatabasePath }}"
       shell: cmd
 
-    # Build Bundle (Bootstrapper) - Simple version first
-    - name: Build Installer Bundle
+    # Create Alternative Installers - Multiple approaches
+    - name: Create PowerShell Installer Package
       run: |
         cd installer
-        echo "Building minimal Bundle first..."
-        wix build Bundle-Simple.wxs -o "InnovAKT-CSET-Simple-v${{ env.BUILD_VERSION }}.exe"
-        echo "If simple works, trying full Bundle..."
-        wix build Bundle.wxs -o "InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe" || echo "Full Bundle failed, using simple version"
+        echo "Creating PowerShell installer package..."
+        mkdir "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}"
+        copy Install-InnovAKT-CSET.ps1 "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}\"
+        copy InnovAKT-CSET.msi "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}\"
+        copy License.rtf "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}\"
+        mkdir "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}\downloads"
+        copy downloads\*.* "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}\downloads\" 2>nul || echo "Downloads not available"
+        powershell Compress-Archive -Path "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}" -DestinationPath "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}.zip"
+        echo "✅ PowerShell installer package created"
+      shell: cmd
+
+    - name: Install NSIS (if PowerShell not preferred)
+      run: |
+        echo "Installing NSIS for alternative installer..."
+        choco install nsis -y
+        echo "✅ NSIS installed"
+      shell: cmd
+      
+    - name: Build NSIS Installer
+      run: |
+        cd installer
+        echo "Building NSIS installer..."
+        makensis InnovAKT-CSET.nsi
+        if exist "InnovAKT-CSET-v${{ env.BUILD_VERSION }}-Setup.exe" (
+          echo "✅ NSIS installer created successfully"
+        ) else (
+          echo "⚠️ NSIS installer failed, PowerShell package available"
+        )
       shell: cmd
 
     # Sign the Installer (Optional - requires signing certificate)
@@ -165,13 +189,15 @@ jobs:
         echo "SHA256: $($hash.Hash)"
       shell: powershell
 
-    # Upload Build Artifacts
+    # Upload Build Artifacts - Multiple installer types
     - name: Upload Installer Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: InnovAKT-CSET-Installer-${{ env.BUILD_VERSION }}
         path: |
-          installer/InnovAKT-CSET-*-v${{ env.BUILD_VERSION }}.exe
+          installer/InnovAKT-CSET.msi
+          installer/InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}.zip
+          installer/InnovAKT-CSET-v${{ env.BUILD_VERSION }}-Setup.exe
           installer/*.sha256
         retention-days: 30
 
