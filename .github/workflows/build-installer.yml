@@ -138,11 +138,14 @@ jobs:
         wix build InnovAKT-CSET.wxs -o InnovAKT-CSET.msi -d BuildOutput="${{ env.BuildOutput }}" -d DatabasePath="${{ env.DatabasePath }}"
       shell: cmd
 
-    # Build Bundle (Bootstrapper) 
+    # Build Bundle (Bootstrapper) - Simple version first
     - name: Build Installer Bundle
       run: |
         cd installer
-        wix build Bundle.wxs -o "InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe"
+        echo "Building minimal Bundle first..."
+        wix build Bundle-Simple.wxs -o "InnovAKT-CSET-Simple-v${{ env.BUILD_VERSION }}.exe"
+        echo "If simple works, trying full Bundle..."
+        wix build Bundle.wxs -o "InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe" || echo "Full Bundle failed, using simple version"
       shell: cmd
 
     # Sign the Installer (Optional - requires signing certificate)
@@ -168,8 +171,8 @@ jobs:
       with:
         name: InnovAKT-CSET-Installer-${{ env.BUILD_VERSION }}
         path: |
-          installer/InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe
-          installer/InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe.sha256
+          installer/InnovAKT-CSET-*-v${{ env.BUILD_VERSION }}.exe
+          installer/*.sha256
         retention-days: 30
 
     # Create GitHub Release

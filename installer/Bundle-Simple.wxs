@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Bundle Name="InnovAKT-CSET" Version="12.5.0.0" Manufacturer="InnovAKT">
+    <Chain>
+      <MsiPackage SourceFile="InnovAKT-CSET.msi" />
+    </Chain>
+  </Bundle>
+</Wix>
