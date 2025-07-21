@@ -11,7 +11,7 @@
     <Variable Name="InstallFolder" Type="string" Value="[ProgramFiles64Folder]InnovAKT-CSET\" />
 
     <!-- Minimal Bootstrap Application -->
-    <BootstrapperApplication Name="InnovAKT-CSET Installer" />
+    <BootstrapperApplication SourceFile="InnovAKT-CSET-Installer.exe" />
 
     <!-- Chain of Packages to Install -->
     <Chain>
@@ -28,7 +28,6 @@
                   SourceFile="downloads\windowsdesktop-runtime-7.0.20-win-x64.exe"
                   DisplayName="Microsoft .NET 7.0 Runtime"
                   InstallArguments="/quiet /norestart"
-                  UninstallArguments="/quiet /norestart"
                   Permanent="yes"
                   Vital="no" />
       
@@ -37,7 +36,6 @@
                   SourceFile="downloads\aspnetcore-runtime-7.0.20-win-x64.exe"
                   DisplayName="Microsoft ASP.NET Core 7.0 Runtime"
                   InstallArguments="/quiet /norestart"
-                  UninstallArguments="/quiet /norestart"
                   Permanent="yes"
                   Vital="no" />
       
