@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
-     xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
 
-  <!-- Simple Bundle Definition - Creates the bootstrapper executable -->
+  <!-- Minimal Bundle Definition - Creates simple bootstrapper -->
   <Bundle Name="InnovAKT-CSET Standalone Installer" 
           Version="12.5.0.0" 
           Manufacturer="InnovAKT"
@@ -11,25 +10,20 @@
     <!-- Bundle Variables -->
     <Variable Name="InstallFolder" Type="string" Value="[ProgramFiles64Folder]InnovAKT-CSET\" />
 
-    <!-- Simple Bootstrap Application (silent install) -->
-    <BootstrapperApplication Name="InnovAKT-CSET Installer">
-      <bal:WixStandardBootstrapperApplication 
-        LicenseFile="License.rtf"
-        Name="InnovAKT-CSET Installer"
-        Theme="none" />
-    </BootstrapperApplication>
+    <!-- Minimal Bootstrap Application -->
+    <BootstrapperApplication Name="InnovAKT-CSET Installer" />
 
-    <!-- Simple Chain of Packages - Install all prerequisites then main app -->
+    <!-- Chain of Packages to Install -->
     <Chain>
       
-      <!-- 1. SQL Server LocalDB 2022 - Always try to install -->
+      <!-- 1. SQL Server LocalDB 2022 -->
       <MsiPackage Id="SqlLocalDB2022Msi"
                   SourceFile="downloads\SqlLocalDB2022.msi"
                   DisplayName="Microsoft SQL Server 2022 LocalDB"
                   Permanent="yes"
                   Vital="no" />
       
-      <!-- 2. .NET 7 Runtime - Always try to install -->
+      <!-- 2. .NET 7 Runtime -->
       <ExePackage Id="NetFramework70Exe"
                   SourceFile="downloads\windowsdesktop-runtime-7.0.20-win-x64.exe"
                   DisplayName="Microsoft .NET 7.0 Runtime"
@@ -38,7 +32,7 @@
                   Permanent="yes"
                   Vital="no" />
       
-      <!-- 3. ASP.NET Core 7 Runtime - Always try to install -->
+      <!-- 3. ASP.NET Core 7 Runtime -->
       <ExePackage Id="AspNetCore70Exe"
                   SourceFile="downloads\aspnetcore-runtime-7.0.20-win-x64.exe"
                   DisplayName="Microsoft ASP.NET Core 7.0 Runtime"

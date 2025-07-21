@@ -43,10 +43,15 @@ jobs:
     # Install WiX Toolset
     - name: Install WiX Toolset
       run: |
-        dotnet tool install --global wix
+        dotnet tool install --global wix --version 4.0.5
+        wix --version
         wix extension add WixToolset.Util.wixext --global
         wix extension add WixToolset.Bal.wixext --global
+        echo "=== Installed Extensions ==="
         wix extension list --global
+        echo "=== Extension Directory ==="
+        dir C:\Users\runneradmin\.wix\extensions\ /s
+      shell: powershell
 
     # Build CSET Application
     - name: Build CSET Backend (API)
@@ -139,11 +144,11 @@ jobs:
         wix build InnovAKT-CSET.wxs -o InnovAKT-CSET.msi -d BuildOutput="${{ env.BuildOutput }}" -d DatabasePath="${{ env.DatabasePath }}"
       shell: cmd
 
-    # Build Bundle (Bootstrapper)
+    # Build Bundle (Bootstrapper) 
     - name: Build Installer Bundle
       run: |
         cd installer
-        wix build Bundle.wxs -o "InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe" -ext WixToolset.Bal.wixext
+        wix build Bundle.wxs -o "InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe"
       shell: cmd
 
     # Sign the Installer (Optional - requires signing certificate)
