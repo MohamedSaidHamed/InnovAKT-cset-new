@@ -45,14 +45,7 @@ jobs:
       run: |
         dotnet tool install --global wix --version 4.0.5
         wix --version
-        echo "Installing extensions with matching WiX version..."
-        wix extension add WixToolset.Util.wixext --global --version 4.0.5
-        wix extension add WixToolset.Bal.wixext --global --version 4.0.5
-        echo "=== Installed Extensions ==="
-        wix extension list --global
-        echo "=== Extension Directory ==="
-        Get-ChildItem -Path "C:\Users\runneradmin\.wix\extensions\" -Recurse -ErrorAction SilentlyContinue
-      shell: powershell
+        echo "WiX Toolset installed successfully"
 
     # Build CSET Application
     - name: Build CSET Backend (API)
