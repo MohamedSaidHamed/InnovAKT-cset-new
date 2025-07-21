@@ -82,21 +82,53 @@ jobs:
             echo "Placeholder for SQL LocalDB" > installer\downloads\SqlLocalDB2022.msi
         }
         
-        # .NET 7 - Use GitHub releases as fallback
-        try {
-            Invoke-WebRequest -Uri "https://github.com/dotnet/core/releases/download/v7.0.20/windowsdesktop-runtime-7.0.20-win-x64.exe" -OutFile "installer\downloads\windowsdesktop-runtime-7.0.20-win-x64.exe" -UseBasicParsing
-            Write-Host "✅ Downloaded .NET 7 Desktop Runtime"
-        } catch {
-            Write-Host "⚠️ Failed to download .NET Runtime: $($_.Exception.Message)"
+        # .NET 7 - Use official Microsoft download with retry
+        $dotnetSuccess = $false
+        $dotnetUrls = @(
+            "https://download.visualstudio.microsoft.com/download/pr/8bc41df1-cbb3-4abf-a0e1-72e88cbd8b9c/8ffdb74b0c967d24e79a7a89dff6f14b/windowsdesktop-runtime-7.0.20-win-x64.exe",
+            "https://dotnetcli.azureedge.net/dotnet/WindowsDesktop/7.0.20/windowsdesktop-runtime-7.0.20-win-x64.exe"
+        )
+        foreach ($url in $dotnetUrls) {
+            try {
+                Write-Host "Trying .NET 7 Desktop Runtime from: $url"
+                Invoke-WebRequest -Uri $url -OutFile "installer\downloads\windowsdesktop-runtime-7.0.20-win-x64.exe" -UseBasicParsing -TimeoutSec 300
+                $size = (Get-Item "installer\downloads\windowsdesktop-runtime-7.0.20-win-x64.exe").Length / 1MB
+                if ($size -gt 10) {
+                    Write-Host "✅ Downloaded .NET 7 Desktop Runtime ($([math]::Round($size, 1)) MB)"
+                    $dotnetSuccess = $true
+                    break
+                }
+            } catch {
+                Write-Host "Failed from $url : $($_.Exception.Message)"
+            }
+        }
+        if (-not $dotnetSuccess) {
+            Write-Host "⚠️ All .NET Runtime downloads failed - creating placeholder"
             echo "Placeholder for .NET Runtime" > installer\downloads\windowsdesktop-runtime-7.0.20-win-x64.exe
         }
         
-        # ASP.NET Core 7 - Use GitHub releases as fallback
-        try {
-            Invoke-WebRequest -Uri "https://github.com/dotnet/core/releases/download/v7.0.20/aspnetcore-runtime-7.0.20-win-x64.exe" -OutFile "installer\downloads\aspnetcore-runtime-7.0.20-win-x64.exe" -UseBasicParsing
-            Write-Host "✅ Downloaded ASP.NET Core Runtime"
-        } catch {
-            Write-Host "⚠️ Failed to download ASP.NET Core Runtime: $($_.Exception.Message)"
+        # ASP.NET Core 7 - Use official Microsoft download with retry
+        $aspnetSuccess = $false
+        $aspnetUrls = @(
+            "https://download.visualstudio.microsoft.com/download/pr/4bc79db1-a6ba-4e38-8a08-2e2297b8a6f8/f8ad23db0c34fdea644c3e89b7bb3a90/aspnetcore-runtime-7.0.20-win-x64.exe",
+            "https://dotnetcli.azureedge.net/dotnet/aspnetcore/Runtime/7.0.20/aspnetcore-runtime-7.0.20-win-x64.exe"
+        )
+        foreach ($url in $aspnetUrls) {
+            try {
+                Write-Host "Trying ASP.NET Core 7 Runtime from: $url"
+                Invoke-WebRequest -Uri $url -OutFile "installer\downloads\aspnetcore-runtime-7.0.20-win-x64.exe" -UseBasicParsing -TimeoutSec 300
+                $size = (Get-Item "installer\downloads\aspnetcore-runtime-7.0.20-win-x64.exe").Length / 1MB
+                if ($size -gt 5) {
+                    Write-Host "✅ Downloaded ASP.NET Core 7 Runtime ($([math]::Round($size, 1)) MB)"
+                    $aspnetSuccess = $true
+                    break
+                }
+            } catch {
+                Write-Host "Failed from $url : $($_.Exception.Message)"
+            }
+        }
+        if (-not $aspnetSuccess) {
+            Write-Host "⚠️ All ASP.NET Core Runtime downloads failed - creating placeholder"
             echo "Placeholder for ASP.NET Runtime" > installer\downloads\aspnetcore-runtime-7.0.20-win-x64.exe
         }
         

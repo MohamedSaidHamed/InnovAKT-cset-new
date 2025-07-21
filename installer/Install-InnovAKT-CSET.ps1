@@ -26,20 +26,44 @@ try {
     Write-Host "Installing .NET 7 Desktop Runtime..." -ForegroundColor Yellow
     $dotnetRuntime = Join-Path $installerDir "downloads\windowsdesktop-runtime-7.0.20-win-x64.exe"
     if (Test-Path $dotnetRuntime) {
-        Start-Process $dotnetRuntime -ArgumentList "/quiet", "/norestart" -Wait -NoNewWindow
-        Write-Host "✅ .NET 7 Runtime installed" -ForegroundColor Green
+        $size = (Get-Item $dotnetRuntime).Length
+        if ($size -gt 1000000) { # > 1MB means real file
+            Start-Process $dotnetRuntime -ArgumentList "/quiet", "/norestart" -Wait -NoNewWindow
+            Write-Host "✅ .NET 7 Runtime installed" -ForegroundColor Green
+        } else {
+            Write-Host "⚠️ .NET Runtime file is placeholder - checking existing installation..." -ForegroundColor Yellow
+            # Check if .NET 7 is already installed
+            $dotnetInstalled = Test-Path "C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\7.0*"
+            if ($dotnetInstalled) {
+                Write-Host "✅ .NET 7 Runtime already installed" -ForegroundColor Green
+            } else {
+                Write-Host "❌ .NET 7 Runtime required but not available. Please install manually from: https://dotnet.microsoft.com/download/dotnet/7.0" -ForegroundColor Red
+            }
+        }
     } else {
-        Write-Host "⚠️ .NET Runtime not found, skipping..." -ForegroundColor Yellow
+        Write-Host "⚠️ .NET Runtime installer not found" -ForegroundColor Yellow
     }
 
     # 3. Install ASP.NET Core 7 Runtime
     Write-Host "Installing ASP.NET Core 7 Runtime..." -ForegroundColor Yellow
     $aspnetRuntime = Join-Path $installerDir "downloads\aspnetcore-runtime-7.0.20-win-x64.exe"
     if (Test-Path $aspnetRuntime) {
-        Start-Process $aspnetRuntime -ArgumentList "/quiet", "/norestart" -Wait -NoNewWindow
-        Write-Host "✅ ASP.NET Core Runtime installed" -ForegroundColor Green
+        $size = (Get-Item $aspnetRuntime).Length
+        if ($size -gt 1000000) { # > 1MB means real file
+            Start-Process $aspnetRuntime -ArgumentList "/quiet", "/norestart" -Wait -NoNewWindow
+            Write-Host "✅ ASP.NET Core Runtime installed" -ForegroundColor Green
+        } else {
+            Write-Host "⚠️ ASP.NET Runtime file is placeholder - checking existing installation..." -ForegroundColor Yellow
+            # Check if ASP.NET Core 7 is already installed
+            $aspnetInstalled = Test-Path "C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\7.0*"
+            if ($aspnetInstalled) {
+                Write-Host "✅ ASP.NET Core 7 Runtime already installed" -ForegroundColor Green
+            } else {
+                Write-Host "❌ ASP.NET Core 7 Runtime required but not available. Please install manually from: https://dotnet.microsoft.com/download/dotnet/7.0" -ForegroundColor Red
+            }
+        }
     } else {
-        Write-Host "⚠️ ASP.NET Core Runtime not found, skipping..." -ForegroundColor Yellow
+        Write-Host "⚠️ ASP.NET Core Runtime installer not found" -ForegroundColor Yellow
     }
 
     # 4. Install InnovAKT-CSET Application
