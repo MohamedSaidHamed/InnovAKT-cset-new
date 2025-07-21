@@ -19,6 +19,8 @@ env:
 jobs:
   build-installer:
     runs-on: windows-latest
+    outputs:
+      version: ${{ env.BUILD_VERSION }}
     
     steps:
     # Checkout Code
@@ -308,11 +310,14 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # Optional: Test the installer
+  # Test the installer
   test-installer:
     needs: build-installer
     runs-on: windows-latest
-    if: false  # Enable when you want to test installations
+    if: true  # Enabled to verify installer works
+    
+    env:
+      BUILD_VERSION: ${{ needs.build-installer.outputs.version || '12.5.0.0' }}
     
     steps:
     - name: Download Installer
@@ -320,16 +325,39 @@ jobs:
       with:
         name: InnovAKT-CSET-Installer-${{ env.BUILD_VERSION }}
         
-    - name: Test Installation
+    - name: Test PowerShell Installer Package
       run: |
-        # Run installer in silent mode for testing
-        Start-Process "InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe" -ArgumentList "/quiet" -Wait
+        echo "=== Testing Installer Package Contents ==="
+        Get-ChildItem -Name
         
-        # Check if application was installed
-        $installed = Test-Path "C:\Program Files\InnovAKT-CSET\CSETWebCore.Api.exe"
-        if (-not $installed) {
-          throw "Installation failed - application not found"
+        # Check if PowerShell installer package exists
+        $packageName = "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}.zip"
+        if (Test-Path $packageName) {
+          echo "✅ PowerShell installer package found: $packageName"
+          $size = (Get-Item $packageName).Length / 1MB
+          echo "📦 Package size: $([math]::Round($size, 1)) MB"
+          
+          # Extract and test contents
+          Expand-Archive -Path $packageName -DestinationPath "test-extract"
+          echo "=== Package Contents ==="
+          Get-ChildItem -Recurse "test-extract" | Select-Object Name, Length
+          
+          # Verify key components exist
+          $msi = Test-Path "test-extract\InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}\InnovAKT-CSET.msi"
+          $script = Test-Path "test-extract\InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}\Install-InnovAKT-CSET.ps1"
+          $sqldb = Test-Path "test-extract\InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}\downloads\SqlLocalDB2022.msi"
+          
+          if ($msi -and $script -and $sqldb) {
+            echo "✅ All key components found in package"
+            echo "✅ Installer package test passed!"
+          } else {
+            echo "❌ Missing components: MSI=$msi, Script=$script, SQL=$sqldb"
+            throw "Installer package validation failed"
+          }
+        } else {
+          echo "❌ PowerShell installer package not found"
+          echo "Available files:"
+          Get-ChildItem
+          throw "No installer package to test"
         }
-        
-        echo "Installation test passed!"
       shell: powershell
