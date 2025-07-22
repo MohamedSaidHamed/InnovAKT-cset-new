@@ -96,18 +96,18 @@
       </Component>
 
       <!-- IIS URL Rewrite Configuration -->
-      <Component Id="IISUrlRewriteConfig" Guid="{45678901-4567-4567-4567-456789ABCDEF}">
+      <Component Id="IISUrlRewriteConfig" Guid="{90123456-9012-9012-9012-9012ABCDEF34}">
         <File Id="IISUrlRewriteXml"
               Source="$(var.BuildOutput)\api\IISUrlRewrite.xml" />
       </Component>
 
       <!-- Web Application Directory Structure -->
-      <Component Id="WebAppDirectory" Guid="{56789012-5678-5678-5678-56789ABCDEF0}">
+      <Component Id="WebAppDirectory" Guid="{01234567-0123-0123-0123-0123ABCDEF45}">
         <CreateFolder Directory="WEBAPPFOLDER" />
       </Component>
 
       <!-- Start Menu Shortcut -->
-      <Component Id="ApplicationShortcut" Directory="ApplicationProgramsFolder" Guid="{45678901-4567-4567-4567-456789ABCDEF}">
+      <Component Id="ApplicationShortcut" Directory="ApplicationProgramsFolder" Guid="{12345678-9ABC-9ABC-9ABC-9ABCDEF01234}">
         <Shortcut Id="ApplicationStartMenuShortcut"
                   Name="InnovAKT-CSET"
                   Target="[INSTALLFOLDER]CSETWebCore.Api.exe"
@@ -121,7 +121,7 @@
       </Component>
 
       <!-- Desktop Shortcut -->
-      <Component Id="DesktopShortcut" Directory="DesktopFolder" Guid="{56789012-5678-5678-5678-56789ABCDEF0}">
+      <Component Id="DesktopShortcut" Directory="DesktopFolder" Guid="{23456789-ABCD-ABCD-ABCD-ABCDEF012345}">
         <Shortcut Id="ApplicationDesktopShortcut"
                   Name="InnovAKT-CSET"
                   Target="[INSTALLFOLDER]CSETWebCore.Api.exe"
