@@ -18,6 +18,7 @@
     <!-- Feature Definition -->
     <Feature Id="ProductFeature" Title="InnovAKT-CSET" Level="1">
       <ComponentGroupRef Id="ProductComponents" />
+      <ComponentGroupRef Id="WebAppComponents" />
       <ComponentGroupRef Id="DatabaseComponents" />
       <ComponentGroupRef Id="ConfigComponents" />
     </Feature>
@@ -46,7 +47,11 @@
   <!-- Folder Structure using StandardDirectory -->
   <Fragment>
     <StandardDirectory Id="ProgramFiles64Folder">
-      <Directory Id="INSTALLFOLDER" Name="InnovAKT-CSET" />
+      <Directory Id="INSTALLFOLDER" Name="InnovAKT-CSET">
+        <Directory Id="WEBAPPFOLDER" Name="WebApp" />
+        <Directory Id="DIAGRAMFOLDER" Name="Diagram" />
+        <Directory Id="DOCUMENTSFOLDER" Name="Documents" />
+      </Directory>
     </StandardDirectory>
     
     <StandardDirectory Id="ProgramMenuFolder">
@@ -90,6 +95,17 @@
               Source="LOCAL-INSTALLATION" />
       </Component>
 
+      <!-- IIS URL Rewrite Configuration -->
+      <Component Id="IISUrlRewriteConfig" Guid="{45678901-4567-4567-4567-456789ABCDEF}">
+        <File Id="IISUrlRewriteXml"
+              Source="$(var.BuildOutput)\api\IISUrlRewrite.xml" />
+      </Component>
+
+      <!-- Web Application Directory Structure -->
+      <Component Id="WebAppDirectory" Guid="{56789012-5678-5678-5678-56789ABCDEF0}">
+        <CreateFolder Directory="WEBAPPFOLDER" />
+      </Component>
+
       <!-- Start Menu Shortcut -->
       <Component Id="ApplicationShortcut" Directory="ApplicationProgramsFolder" Guid="{45678901-4567-4567-4567-456789ABCDEF}">
         <Shortcut Id="ApplicationStartMenuShortcut"
@@ -115,6 +131,24 @@
                        Name="desktop" 
                        Type="integer" 
                        Value="1" />
+      </Component>
+
+    </ComponentGroup>
+  </Fragment>
+
+  <!-- Web Application Components -->
+  <Fragment>
+    <ComponentGroup Id="WebAppComponents" Directory="WEBAPPFOLDER">
+      
+      <!-- Main index.html file -->
+      <Component Id="IndexHtml" Guid="{67890123-6789-6789-6789-6789ABCDEF01}">
+        <File Id="IndexHtmlFile" 
+              Source="$(var.BuildOutput)\web\index.html" />
+      </Component>
+
+      <!-- Angular application files will be added here by the build process -->
+      <Component Id="WebAppPlaceholder" Guid="{89012345-8901-8901-8901-8901ABCDEF23}">
+        <CreateFolder />
       </Component>
 
     </ComponentGroup>
