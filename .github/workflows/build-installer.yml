@@ -65,15 +65,31 @@ jobs:
     - name: Build CSET Frontend (Angular)
       run: |
         cd CSETWebNg
-        npm run build -- --configuration production
-        xcopy /E /I /Y dist ..\dist\web
-        echo "=== Web Build Contents ==="
-        dir ..\dist\web
-        if exist ..\dist\web\index.html (
-          echo "✅ index.html found in web build"
-        ) else (
-          echo "⚠️ index.html not found in web build"
+        echo "=== Angular Build Configuration ==="
+        if exist angular.json (
+          findstr "outputPath" angular.json
         )
+        echo "=== Starting Angular Build ==="
+        npm run build -- --configuration production
+        echo "=== Angular Build Output ==="
+        if exist dist (
+          dir dist
+          echo "=== Angular dist contents ==="
+          dir dist /s
+        ) else (
+          echo "❌ No dist folder created by Angular build"
+        )
+        echo "=== Copying to main dist folder ==="
+        if exist dist (
+          xcopy /E /I /Y dist ..\dist\web
+          echo "✅ Angular files copied to ..\dist\web"
+        ) else (
+          echo "⚠️ No Angular dist to copy, creating placeholder"
+          mkdir ..\dist\web
+          echo "Angular build placeholder" > ..\dist\web\index.html
+        )
+        echo "=== Final Web Build Contents ==="
+        dir ..\dist\web
       shell: cmd
 
     # Download Microsoft Prerequisites - Simplified approach

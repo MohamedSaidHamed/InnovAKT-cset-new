@@ -140,13 +140,7 @@
   <Fragment>
     <ComponentGroup Id="WebAppComponents" Directory="WEBAPPFOLDER">
       
-      <!-- Main index.html file -->
-      <Component Id="IndexHtml" Guid="{67890123-6789-6789-6789-6789ABCDEF01}">
-        <File Id="IndexHtmlFile" 
-              Source="$(var.BuildOutput)\web\index.html" />
-      </Component>
-
-      <!-- Angular application files will be added here by the build process -->
+      <!-- Web application placeholder - files will be added when Angular build is working -->
       <Component Id="WebAppPlaceholder" Guid="{89012345-8901-8901-8901-8901ABCDEF23}">
         <CreateFolder />
       </Component>

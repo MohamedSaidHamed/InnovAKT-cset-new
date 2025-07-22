@@ -128,14 +128,35 @@ try {
         # 7. Create startup shortcut that launches browser
         Write-Host "Creating startup shortcut..." -ForegroundColor Yellow
         $startupScript = Join-Path $appPath "StartCSET.bat"
-        @"
+        
+        # Check if we have web files
+        $webAppPath = Join-Path $appPath "WebApp"
+        $hasWebApp = (Test-Path $webAppPath) -and (Test-Path (Join-Path $webAppPath "index.html"))
+        
+        if ($hasWebApp) {
+            Write-Host "✅ Web application files found" -ForegroundColor Green
+            @"
 @echo off
 echo Starting InnovAKT-CSET...
 cd /d "$appPath"
 start "" CSETWebCore.Api.exe
-timeout /t 3 /nobreak >nul
+timeout /t 5 /nobreak >nul
 start "" http://localhost:5000
 "@ | Set-Content $startupScript
+        } else {
+            Write-Host "⚠️ Web application files not found, creating API-only launcher" -ForegroundColor Yellow
+            @"
+@echo off
+echo Starting InnovAKT-CSET API Server...
+cd /d "$appPath"
+start "" CSETWebCore.Api.exe
+timeout /t 5 /nobreak >nul
+echo InnovAKT-CSET API is running at http://localhost:5000
+echo You may need to access the web interface manually.
+pause
+"@ | Set-Content $startupScript
+        }
+        
         Write-Host "✅ Created startup script" -ForegroundColor Green
         
     } else {
