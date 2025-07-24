@@ -176,9 +176,8 @@ jobs:
     - name: Prepare Database Files
       run: |
         mkdir installer\database
-        REM Create placeholder database files for the installer
-        echo Database preparation completed > installer\database\README.txt
-        echo The installer will create the database during installation >> installer\database\README.txt
+        copy CSETWebApi\CSETWeb_Api\CSETWebCore.DatabaseManagerTests1\Data\CSETWeb90.mdf installer\database\CSETWeb.mdf
+        copy CSETWebApi\CSETWeb_Api\CSETWebCore.DatabaseManagerTests1\Data\CSETWeb90_log.ldf installer\database\CSETWeb_log.ldf
       shell: cmd
 
     # Debug Build Output Structure
@@ -206,42 +205,13 @@ jobs:
         wix build InnovAKT-CSET.wxs -o InnovAKT-CSET.msi -d BuildOutput="${{ env.BuildOutput }}" -d DatabasePath="${{ env.DatabasePath }}"
       shell: cmd
 
-    # Create Alternative Installers - Multiple approaches
-    - name: Create PowerShell Installer Package
+    - name: Build WiX Burn Bundle
       run: |
         cd installer
-        echo "Creating PowerShell installer package..."
-        mkdir "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}"
-        copy Install-InnovAKT-CSET.ps1 "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}\"
-        copy InnovAKT-CSET.msi "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}\"
-        copy License.rtf "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}\"
-        mkdir "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}\downloads"
-        copy downloads\*.* "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}\downloads\" 2>nul || echo "Downloads not available"
-        powershell Compress-Archive -Path "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}" -DestinationPath "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}.zip"
-        echo "✅ PowerShell installer package created"
-        echo "=== Package Contents and Sizes ==="
-        dir "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}" /s
-        dir InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}.zip
+        wix build Bundle.wxs -o InnovAKT-CSET-v${{ env.BUILD_VERSION }}-Setup.exe -d ProjectDir="${{ github.workspace }}"
       shell: cmd
 
-    - name: Install NSIS (if PowerShell not preferred)
-      run: |
-        echo "Installing NSIS for alternative installer..."
-        choco install nsis -y
-        echo "✅ NSIS installed"
-      shell: cmd
-      
-    - name: Build NSIS Installer
-      run: |
-        cd installer
-        echo "Building NSIS installer..."
-        makensis InnovAKT-CSET.nsi
-        if exist "InnovAKT-CSET-v${{ env.BUILD_VERSION }}-Setup.exe" (
-          echo "✅ NSIS installer created successfully"
-        ) else (
-          echo "⚠️ NSIS installer failed, PowerShell package available"
-        )
-      shell: cmd
+    
 
     # Sign the Installer (Optional - requires signing certificate)
     - name: Sign Installer
@@ -272,13 +242,7 @@ jobs:
           echo "PowerShell Package SHA256: $($hash.Hash) (Size: $([math]::Round($zipSize, 2)) MB)"
         }
         
-        # Hash the NSIS installer if it exists
-        if (Test-Path "InnovAKT-CSET-v${{ env.BUILD_VERSION }}-Setup.exe") {
-          $hash = Get-FileHash "InnovAKT-CSET-v${{ env.BUILD_VERSION }}-Setup.exe" -Algorithm SHA256
-          $hash.Hash | Out-File "InnovAKT-CSET-v${{ env.BUILD_VERSION }}-Setup.exe.sha256"
-          $nsisSize = (Get-Item "InnovAKT-CSET-v${{ env.BUILD_VERSION }}-Setup.exe").Length / 1MB
-          echo "NSIS Installer SHA256: $($hash.Hash) (Size: $([math]::Round($nsisSize, 2)) MB)"
-        }
+        
         
         echo "All SHA256 hashes generated successfully"
       shell: powershell
@@ -289,8 +253,6 @@ jobs:
       with:
         name: InnovAKT-CSET-Installer-${{ env.BUILD_VERSION }}
         path: |
-          installer/InnovAKT-CSET.msi
-          installer/InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}.zip
           installer/InnovAKT-CSET-v${{ env.BUILD_VERSION }}-Setup.exe
           installer/*.sha256
         retention-days: 30
@@ -301,8 +263,8 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          installer/InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe
-          installer/InnovAKT-CSET-v${{ env.BUILD_VERSION }}.exe.sha256
+          installer/InnovAKT-CSET-v${{ env.BUILD_VERSION }}-Setup.exe
+          installer/InnovAKT-CSET-v${{ env.BUILD_VERSION }}-Setup.exe.sha256
         body: |
           ## InnovAKT-CSET v${{ env.BUILD_VERSION }}
           

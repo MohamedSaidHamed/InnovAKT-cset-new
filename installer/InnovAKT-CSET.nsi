@@ -15,6 +15,8 @@ RequestExecutionLevel admin
 !define MUI_ABORTWARNING
 !define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\modern-install.ico"
 
+SetCompressor /SOLID lzma
+
 ; Pages
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE "License.rtf"
