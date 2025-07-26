@@ -208,7 +208,7 @@ jobs:
     - name: Build WiX Burn Bundle
       run: |
         cd installer
-        wix build Bundle.wxs -o InnovAKT-CSET-v${{ env.BUILD_VERSION }}-Setup.exe -d ProjectDir="${{ github.workspace }}"
+        wix build Bundle.wxs --output-type bundle -o InnovAKT-CSET-v${{ env.BUILD_VERSION }}-Setup.exe -d ProjectDir="${{ github.workspace }}"
       shell: cmd
 
     
