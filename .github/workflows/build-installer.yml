@@ -26,6 +26,9 @@ jobs:
       - name: Build solution
         run: msbuild CSETWebApi/CSETWeb_Api/CSETWeb_Api.sln /p:Configuration=Release
 
+      - name: List installer directory
+        run: ls -R installer
+
       - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
