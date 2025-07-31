@@ -99,7 +99,7 @@ jobs:
         
         # SQL Server LocalDB 2022 - Try official URL with error handling
         try {
-            Invoke-WebRequest -Uri "https://download.microsoft.com/download/3/8/d/38de7036-2433-4207-8eae-06e247e17b25/SqlLocalDB.msi" -OutFile "installer\downloads\SqlLocalDB2022.msi" -UseBasicParsing
+            Invoke-WebRequest -Uri "https://download.microsoft.com/download/3/8/d/38de7036-2433-4207-8eae-06e247e17b25/SqlLocalDB2022.msi" -OutFile "installer\downloads\SqlLocalDB2022.msi" -UseBasicParsing
             Write-Host "✅ Downloaded SQL Server LocalDB 2022"
         } catch {
             Write-Host "⚠️ Failed to download SQL Server LocalDB: $($_.Exception.Message)"
@@ -208,8 +208,8 @@ jobs:
     - name: Build WiX Burn Bundle
       run: |
         cd installer
-        wix build Bundle.wxs --output-type bundle -o InnovAKT-CSET-v${{ env.BUILD_VERSION }}-Setup.exe -d ProjectDir="${{ github.workspace }}"
-      shell: cmd
+        wix build Bundle.wxs -o InnovAKT-CSET-v${{ env.BUILD_VERSION }}-Setup.exe -d ProjectDir="${{ github.workspace }}"
+      shell: powershell
 
     
 
@@ -238,7 +238,7 @@ jobs:
         if (Test-Path "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}.zip") {
           $hash = Get-FileHash "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}.zip" -Algorithm SHA256
           $hash.Hash | Out-File "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}.zip.sha256"
-          $zipSize = (Get-Item "InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}.zip").Length / 1MB
+          $zipSize = (Get-Item "installer\downloads\InnovAKT-CSET-PowerShell-v${{ env.BUILD_VERSION }}.zip").Length / 1MB
           echo "PowerShell Package SHA256: $($hash.Hash) (Size: $([math]::Round($zipSize, 2)) MB)"
         }
         
@@ -255,6 +255,7 @@ jobs:
         path: |
           installer/InnovAKT-CSET-v${{ env.BUILD_VERSION }}-Setup.exe
           installer/*.sha256
+          installer/build_error.log
         retention-days: 30
 
     # Create GitHub Release
