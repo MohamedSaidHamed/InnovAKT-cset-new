@@ -41,8 +41,27 @@ jobs:
       - name: Download Prerequisites
         run: |
           mkdir installer\downloads
-          Invoke-WebRequest -Uri "https://download.microsoft.com/download/3/8/d/38de7036-2433-4207-8eae-06e247e17b25/SqlLocalDB.msi" -OutFile "installer\downloads\SqlLocalDB.msi"
-          Invoke-WebRequest -Uri "https://download.visualstudio.microsoft.com/download/pr/8bc41df1-cbb3-4abf-a0e1-72e88cbd8b9c/8ffdb74b0c967d24e79a7a89dff6f14b/windowsdesktop-runtime-7.0.20-win-x64.exe" -OutFile "installer\downloads\windowsdesktop-runtime.exe"
+          $urls = @(
+            "https://download.microsoft.com/download/3/8/d/38de7036-2433-4207-8eae-06e247e17b25/SqlLocalDB.msi",
+            "https://download.visualstudio.microsoft.com/download/pr/8bc41df1-cbb3-4abf-a0e1-72e88cbd8b9c/8ffdb74b0c967d24e79a7a89dff6f14b/windowsdesktop-runtime-7.0.20-win-x64.exe"
+          )
+          foreach ($url in $urls) {
+            $fileName = $url.Split('/')[-1]
+            $outputFile = "installer\downloads\$fileName"
+            for ($i = 1; $i -le 3; $i++) {
+              try {
+                Invoke-WebRequest -Uri $url -OutFile $outputFile
+                Write-Host "Successfully downloaded $fileName"
+                break
+              } catch {
+                Write-Host "Attempt $i to download $fileName failed. Retrying..."
+                if ($i -eq 3) {
+                  Write-Error "Failed to download $fileName after 3 attempts."
+                  exit 1
+                }
+              }
+            }
+          }
         shell: powershell
 
       - name: Build Installer
