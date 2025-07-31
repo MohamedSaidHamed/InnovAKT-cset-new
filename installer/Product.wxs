@@ -21,7 +21,15 @@
 
   <Fragment>
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-      <!-- TODO: Add files to the installer here. -->
+      <Component Id="CSETWebCore.Api.exe" Guid="*">
+        <File Id="CSETWebCore.Api.exe" Source="..\CSETWebApi\CSETWeb_Api\CSETWeb_ApiCore\bin\Release\net7.0\CSETWebCore.Api.exe" KeyPath="yes" />
+      </Component>
+      <Component Id="appsettings.json" Guid="*">
+        <File Id="appsettings.json" Source="..\CSETWebApi\CSETWeb_Api\CSETWeb_ApiCore\bin\Release\net7.0\appsettings.json" KeyPath="yes" />
+      </Component>
+      <Component Id="index.html" Guid="*">
+        <File Id="index.html" Source="..\CSETWebNg\dist\index.html" KeyPath="yes" />
+      </Component>
     </ComponentGroup>
   </Fragment>
 </Wix>

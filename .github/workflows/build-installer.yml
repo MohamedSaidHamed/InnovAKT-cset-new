@@ -12,10 +12,15 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
 
       - name: Setup NuGet
         uses: NuGet/setup-nuget@v1
@@ -23,14 +28,31 @@ jobs:
       - name: Restore NuGet packages
         run: nuget restore CSETWebApi/CSETWeb_Api/CSETWeb_Api.sln
 
-      - name: Build solution
-        run: msbuild CSETWebApi/CSETWeb_Api/CSETWeb_Api.sln /p:Configuration=Release
+      - name: Build Angular Frontend
+        run: |
+          cd CSETWebNg
+          npm ci
+          npm run build -- --configuration production
+        shell: cmd
 
-      - name: List installer directory
-        run: ls -R installer
+      - name: Publish .NET Backend
+        run: msbuild CSETWebApi/CSETWeb_Api/CSETWeb_ApiCore/CSETWebCore.Api.csproj /p:Configuration=Release /p:DeployOnBuild=true /p:PublishProfile=FolderProfile
+
+      - name: Download Prerequisites
+        run: |
+          mkdir installer\downloads
+          Invoke-WebRequest -Uri "https://download.microsoft.com/download/3/8/d/38de7036-2433-4207-8eae-06e247e17b25/SqlLocalDB.msi" -OutFile "installer\downloads\SqlLocalDB.msi"
+          Invoke-WebRequest -Uri "https://download.visualstudio.microsoft.com/download/pr/8bc41df1-cbb3-4abf-a0e1-72e88cbd8b9c/8ffdb74b0c967d24e79a7a89dff6f14b/windowsdesktop-runtime-7.0.20-win-x64.exe" -OutFile "installer\downloads\windowsdesktop-runtime.exe"
+        shell: powershell
+
+      - name: Build Installer
+        run: msbuild installer/CsetInstaller.wixproj /p:Configuration=Release /p:OutDir=../build_output/
+
+      - name: List build output
+        run: ls -R build_output
 
       - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
           name: CSET-installer
-          path: installer/bin/Release/CSET-Installer.msi
+          path: build_output/CSET-Installer.exe

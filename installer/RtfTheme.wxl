@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-us" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+  <String Id="InstallButton">Install</String>
+  <String Id="WelcomeCancelButton">Cancel</String>
+  <String Id="ProgressCancelButton">Cancel</String>
+  <String Id="SuccessLaunchButton">Launch</String>
+  <String Id="SuccessCancelButton">Finish</String>
+  <String Id="FailureCancelButton">Close</String>
+</WixLocalization>
