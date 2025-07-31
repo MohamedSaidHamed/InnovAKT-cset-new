@@ -17,7 +17,7 @@
 
   <Fragment>
     <PackageGroup Id="NetFx48Web">
-      <ExePackage Id="NetFx48Web" DisplayName=".NET Framework 4.8" Compressing="yes" PerMachine="yes" Permanent="yes" Vital="yes" SuppressSignatureVerification="yes" SourceFile="installer\downloads\windowsdesktop-runtime.exe" />
+      <ExePackage Id="NetFx48Web" DisplayName=".NET Framework 4.8" PerMachine="yes" Permanent="yes" Vital="yes" SuppressSignatureVerification="yes" SourceFile="installer\downloads\windowsdesktop-runtime.exe" />
     </PackageGroup>
   </Fragment>
 </Wix>
