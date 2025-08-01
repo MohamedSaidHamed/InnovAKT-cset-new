@@ -11,13 +11,13 @@
 
     <Chain>
       <PackageGroupRef Id="NetFx48Web" />
-      <MsiPackage Id="CSET" SourceFile="CsetInstaller.msi" />
+      <MsiPackage Id="CSET" SourceFile="installer\bin\Release\CSET-Installer.msi" />
     </Chain>
   </Bundle>
 
   <Fragment>
     <PackageGroup Id="NetFx48Web">
-      <ExePackage Id="NetFx48Web" DisplayName=".NET Framework 4.8" PerMachine="yes" Permanent="yes" Vital="yes" SuppressSignatureVerification="yes" SourceFile="installer\downloads\windowsdesktop-runtime.exe" />
+      <ExePackage Id="NetFx48Web" DisplayName=".NET Framework 4.8" PerMachine="yes" Permanent="yes" Vital="yes" SuppressSignatureVerification="yes" SourceFile="installer\downloads\windowsdesktop-runtime-7.0.20-win-x64.exe" />
     </PackageGroup>
   </Fragment>
 </Wix>

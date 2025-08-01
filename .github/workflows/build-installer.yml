@@ -64,8 +64,11 @@ jobs:
           }
         shell: powershell
 
-      - name: Build Installer
-        run: msbuild installer/CsetInstaller.wixproj /p:Configuration=Release /p:OutDir=../build_output/
+      - name: Build MSI Installer
+        run: msbuild installer/CsetInstaller.wixproj /p:Configuration=Release /p:OutDir=installer/bin/Release/
+
+      - name: Build Bundle Installer
+        run: msbuild installer/CsetBundle.wixproj /p:Configuration=Release /p:OutDir=build_output/
 
       - name: List build output
         run: ls -R build_output
@@ -74,4 +77,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: CSET-installer
-          path: build_output/CSET-Installer.exe
+          path: build_output/CSET-Installer-Bundle.exe
