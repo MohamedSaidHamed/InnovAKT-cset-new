@@ -39,14 +39,14 @@ jobs:
       - name: Publish .NET Backend
         run: |
           msbuild CSETWebApi/CSETWeb_Api/CSETWeb_ApiCore/CSETWebCore.Api.csproj /p:Configuration=Release /p:DeployOnBuild=true /p:PublishProfile=FolderProfile
-          ls -R CSETWebApi/CSETWeb_Api/CSETWeb_ApiCore/bin/Release/net7.0
+          ls -R CSETWebApi/CSETWeb_Api/CSETWeb_ApiCore/bin/Release/net8.0
 
       - name: Download Prerequisites
         run: |
           mkdir installer\downloads
           $urls = @(
             "https://download.microsoft.com/download/3/8/d/38de7036-2433-4207-8eae-06e247e17b25/SqlLocalDB.msi",
-            "https://download.visualstudio.microsoft.com/download/pr/08bbfe8f-812d-479f-803b-23ea0bffce47/c320e4b037f3e92ab7ea92c3d7ea3ca1/windowsdesktop-runtime-7.0.20-win-x64.exe"
+            "https://download.visualstudio.microsoft.com/download/pr/122a2c4c-622a-41de-95b0-8183a03b8d2d/e76429775a03a92b8f5560a4c3456f4f/windowsdesktop-runtime-8.0.7-win-x64.exe"
           )
           foreach ($url in $urls) {
             $fileName = $url.Split('/')[-1]
