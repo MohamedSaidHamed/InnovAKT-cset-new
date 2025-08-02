@@ -33,10 +33,13 @@ jobs:
           cd CSETWebNg
           npm ci
           npm run build -- --configuration production
+          ls -R dist
         shell: cmd
 
       - name: Publish .NET Backend
-        run: msbuild CSETWebApi/CSETWeb_Api/CSETWeb_ApiCore/CSETWebCore.Api.csproj /p:Configuration=Release /p:DeployOnBuild=true /p:PublishProfile=FolderProfile
+        run: |
+          msbuild CSETWebApi/CSETWeb_Api/CSETWeb_ApiCore/CSETWebCore.Api.csproj /p:Configuration=Release /p:DeployOnBuild=true /p:PublishProfile=FolderProfile
+          ls -R CSETWebApi/CSETWeb_Api/CSETWeb_ApiCore/bin/Release/net7.0
 
       - name: Download Prerequisites
         run: |
