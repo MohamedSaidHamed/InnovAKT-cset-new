@@ -22,8 +22,7 @@
   <Fragment>
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
       <Component Id="CSETWebCore.Api.exe" Guid="*">
-        <File Id="CSETWebCore.Api.exe" Source="..\CSETWebApi\CSETWeb_Api\CSETWeb_ApiCore\bin\Release
-et8.0\CSETWebCore.Api.exe" KeyPath="yes" />
+        <File Id="CSETWebCore.Api.exe" Source="..\CSETWebApi\CSETWeb_Api\CSETWeb_ApiCore\bin\Release\net8.0\CSETWebCore.Api.exe" KeyPath="yes" />
       </Component>
       <Component Id="appsettings.json" Guid="*">
         <File Id="appsettings.json" Source="..\CSETWebApi\CSETWeb_Api\CSETWeb_ApiCore\bin\Release\net8.0\appsettings.json" KeyPath="yes" />
