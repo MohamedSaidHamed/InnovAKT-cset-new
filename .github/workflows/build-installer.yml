@@ -46,7 +46,7 @@ jobs:
           mkdir installer\downloads
           $urls = @(
             "https://download.microsoft.com/download/3/8/d/38de7036-2433-4207-8eae-06e247e17b25/SqlLocalDB.msi",
-            "https://download.visualstudio.microsoft.com/download/pr/122a2c4c-622a-41de-95b0-8183a03b8d2d/e76429775a03a92b8f5560a4c3456f4f/windowsdesktop-runtime-8.0.7-win-x64.exe"
+            "https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-8.0.7-windows-x64-installer"
           )
           foreach ($url in $urls) {
             $fileName = $url.Split('/')[-1]
